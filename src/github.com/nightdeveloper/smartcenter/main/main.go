@@ -5,8 +5,7 @@ import (
 	"os"
 	"io"
 	"github.com/nightdeveloper/podcastsynchronizer/rsschecker"
-	aliveChecker "github.com/nightdeveloper/alivechecker/checker"
-	acSettings "github.com/nightdeveloper/alivechecker/settings"
+	"github.com/nightdeveloper/smartcenter/alivechecker"
 	psSettings "github.com/nightdeveloper/podcastsynchronizer/settings"
 	scSettings "github.com/nightdeveloper/smartcenter/settings"
 	"github.com/nightdeveloper/smartcenter/chats"
@@ -40,10 +39,6 @@ func main() {
 	psConfig := psSettings.Config{}
 	psConfig.Load()
 
-	// alive checker config
-	acConfig := acSettings.Config{}
-	acConfig.Load()
-
 	// chat
 	cm := chats.ChatManager{}
 	cm.Init(&scConfig)
@@ -52,7 +47,7 @@ func main() {
 	chatChannel := cm.GetChatChannel();
 
 	// alive checker loop
-	ac := aliveChecker.NewChecker(&acConfig)
+	ac := alivechecker.NewChecker(&scConfig)
 	ac.SetChatChannel(chatChannel)
 	go ac.StartLoop();
 

@@ -5,16 +5,18 @@ import (
 	"log"
 	"path/filepath"
 	"io/ioutil"
+	"time"
 )
 
 type Config struct {
 	TelegramKey		string		`json:"telegramKey"`
 	TelegramOpId	int64		`json:"telegramOpId"`
+	LastAlive		*time.Time	`json:"lastAlive"`
 }
 
 func (c *Config) getFileName() string {
 	absPath, _ := filepath.Abs("./");
-	return absPath + "config_sc.json";
+	return absPath + "/config_sc.json";
 }
 
 func (c *Config) Load() {

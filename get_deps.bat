@@ -1,0 +1,3 @@
+set GOPATH=%CD%
+
+go get ./...

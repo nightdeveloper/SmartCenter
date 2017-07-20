@@ -1,9 +1,9 @@
-package checker;
+package alivechecker;
 
 import (
 	"log"
 	"time"
-	"github.com/nightdeveloper/alivechecker/settings"
+	"github.com/nightdeveloper/smartcenter/settings"
 	"fmt"
 )
 
