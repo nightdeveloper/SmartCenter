@@ -1,0 +1,8 @@
+.idea
+bin
+logs/app.log
+pkg
+temp
+config_ac.json
+config_ps.json
+config_sc.json

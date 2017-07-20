@@ -1,0 +1,18 @@
+{
+	"dropboxDir": "C:/Dropbox",
+	"podcasts": [
+		{
+			"url": "test.local/rss",
+		},
+		{
+			"url": "test2.local/rss.xml",
+			"maxDepth": 100,
+			"filters": [
+				{
+					"title": "test"
+				}
+			]
+		}
+
+	]
+}
