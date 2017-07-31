@@ -54,7 +54,7 @@ func main() {
 	// checker loop
 	checker := rsschecker.NewChecker(&psConfig)
 	checker.SetChatChannel(chatChannel)
-	//go checker.StartLoop()
+	go checker.StartLoop()
 
 	// infinite loop
 	select{}

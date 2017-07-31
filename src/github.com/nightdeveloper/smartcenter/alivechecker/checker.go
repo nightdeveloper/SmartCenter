@@ -36,11 +36,9 @@ func (c *Checker) StartLoop() {
 	if (c.config.LastAlive != nil) {
 		duration := time.Since(*c.config.LastAlive);
 
-		msg := fmt.Sprintf("Last alive at %s, unavailable %02.0f:%02.0f:%02.0f",
-			c.config.LastAlive.Format("02.01.2006 15:04:05"),
-			duration.Hours(),
-			duration.Minutes(),
-			duration.Seconds());
+		msg := fmt.Sprintf("Last alive at %s, unavailable %s",   
+			c.config.LastAlive.Format("02.01.2006 15:04:05"),   
+			duration);
 
 		log.Println(msg);
 

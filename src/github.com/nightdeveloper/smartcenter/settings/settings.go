@@ -54,5 +54,5 @@ func (c *Config) Save() {
 		panic("config write error");
 	}
 
-	log.Println("Config saved");
+//	log.Println("Config saved");
 }
