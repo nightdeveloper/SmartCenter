@@ -1,0 +1,3 @@
+export GOPATH=${PWD}
+
+go get ./...
