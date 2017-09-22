@@ -136,6 +136,11 @@ func (c *Checker) StartLoop() {
 			isConnectionNow = isConnectionOk
 		}
 
+		if isConnectionNow {
+			lastConnectionTime = time.Now()
+		}
+
+
 		c.config.Save()
 
 		time.Sleep(time.Duration(5) * time.Minute);
