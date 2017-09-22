@@ -93,6 +93,12 @@ func (c *Checker) StartLoop() {
 
 		if isConnectionOk && lastIp == "" {
 			lastIp = ip
+
+    			msg := fmt.Sprintf("started with ip %s", lastIp);
+
+			log.Println(msg)
+
+			c.chatChannel <- msg
 		}
 
 		if lastIp != ip {
