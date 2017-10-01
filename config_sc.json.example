@@ -1,4 +1,6 @@
 {
 	"telegramKey" : "123123123123123123123123123123123123123123123",
-	"telegramOpId" : "123456789"
+	"telegramOpId" : "123456789",
+	"getIPURL1": "http://host/getip.php",
+	"getIPURL2": "http://host/ip"
 }

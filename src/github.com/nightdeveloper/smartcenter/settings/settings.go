@@ -12,6 +12,8 @@ type Config struct {
 	TelegramKey		string		`json:"telegramKey"`
 	TelegramOpId	int64		`json:"telegramOpId"`
 	LastAlive		*time.Time	`json:"lastAlive"`
+	GetIPURL1		string		`json:"getIPURL1"`
+	GetIPURL2		string		`json:"getIPURL2"`
 }
 
 func (c *Config) getFileName() string {

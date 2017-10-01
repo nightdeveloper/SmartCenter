@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"net/http"
 	"io/ioutil"
-	"strings"
 )
 
 type Checker struct {
@@ -28,10 +27,10 @@ func (c *Checker) SetChatChannel(cc chan string) {
 }
 
 
-func checkConnection() string {
+func checkConnection(url string) string {
 
 	client := http.Client{ Timeout: time.Duration(10 * time.Minute) }
-	response, err := client.Get("http://api.ipify.org/?format=json")
+	response, err := client.Get(url)
 
 	if err != nil {
 		log.Println("connection check error ", err.Error())
@@ -50,9 +49,6 @@ func checkConnection() string {
 	var ip string
 
 	ip = string(bytes)
-
-	ip = strings.Replace(ip, "{\"ip\":\"", "", 1)
-	ip = strings.Replace(ip, "\"}", "", 1)
 
 	return ip
 }
@@ -79,7 +75,7 @@ func (c *Checker) StartLoop() {
 	}
 
 	isConnectionNow := true
-	lastIp := "";
+	lastIp := ""
 
 	var lastConnectionTime time.Time
 
@@ -87,11 +83,15 @@ func (c *Checker) StartLoop() {
 		now := time.Now();
 		c.config.LastAlive = &now
 
-		ip := checkConnection()
+		ip := checkConnection(c.config.GetIPURL1)
+
+		if (ip == "") {
+			ip = checkConnection(c.config.GetIPURL2);
+		}
 
 		isConnectionOk := ip != ""
 
-		if isConnectionOk && lastIp == "" {
+		if isConnectionOk && lastIp == "initial" {
 			lastIp = ip
 
     			msg := fmt.Sprintf("started with ip %s", lastIp);
@@ -101,7 +101,7 @@ func (c *Checker) StartLoop() {
 			c.chatChannel <- msg
 		}
 
-		if lastIp != ip {
+		if lastIp != ip && ip != "" {
 
 			msg := fmt.Sprintf("IP changed %s -> %s",
 				lastIp,
@@ -149,6 +149,6 @@ func (c *Checker) StartLoop() {
 
 		c.config.Save()
 
-		time.Sleep(time.Duration(5) * time.Minute);
+		time.Sleep(time.Duration(1) * time.Minute);
 	}
 }
