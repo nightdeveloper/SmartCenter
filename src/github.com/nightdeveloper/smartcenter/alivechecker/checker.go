@@ -83,10 +83,16 @@ func (c *Checker) StartLoop() {
 		now := time.Now();
 		c.config.LastAlive = &now
 
+		checkService := "1"
 		ip := checkConnection(c.config.GetIPURL1)
 
-		if (ip == "") {
-			ip = checkConnection(c.config.GetIPURL2);
+		if ip == "" {
+			checkService = "2"
+			ip = checkConnection(c.config.GetIPURL2)
+
+			if ip == "" {
+				checkService = ""
+			}
 		}
 
 		isConnectionOk := ip != ""
@@ -94,7 +100,7 @@ func (c *Checker) StartLoop() {
 		if isConnectionOk && lastIp == "initial" {
 			lastIp = ip
 
-    			msg := fmt.Sprintf("started with ip %s", lastIp);
+    			msg := fmt.Sprintf("started with ip %s (checkservice %s)", lastIp, checkService)
 
 			log.Println(msg)
 
@@ -103,9 +109,10 @@ func (c *Checker) StartLoop() {
 
 		if lastIp != ip && ip != "" {
 
-			msg := fmt.Sprintf("IP changed %s -> %s",
+			msg := fmt.Sprintf("IP changed %s -> %s (checkservice %s)",
 				lastIp,
-				ip)
+				ip,
+				checkService)
 
 			log.Println(msg)
 
