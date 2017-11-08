@@ -5,6 +5,7 @@ import (
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
 	"fmt"
+	"time"
 )
 
 type ChatManager struct {
@@ -57,10 +58,16 @@ func (cm *ChatManager) startWriteLoop() {
 
 		newMsg := tgbotapi.NewMessage(cm.c.TelegramOpId, msg)
 		newMsg.ParseMode = "markdown"
-		_, err := cm.bot.Send(newMsg)
 
-		if (err != nil) {
-			log.Println("error while sending message: " + err.Error())
+		for {
+			_, err := cm.bot.Send(newMsg)
+
+			if err != nil {
+				log.Println("error while sending message: " + err.Error())
+				time.Sleep(time.Duration(1) * time.Minute);
+			} else {
+				break;
+			}
 		}
 	}
 }
