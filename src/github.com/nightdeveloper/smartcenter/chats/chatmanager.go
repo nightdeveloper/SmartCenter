@@ -6,6 +6,7 @@ import (
 	"log"
 	"fmt"
 	"time"
+	"strings"
 )
 
 type ChatManager struct {
@@ -38,17 +39,21 @@ func (cm *ChatManager) startReadLoop() {
 
 	for update := range updates {
 
-		if (update.Message == nil) {
+		if update.Message == nil {
 			continue
 		}
 
-		if (int64(update.Message.From.ID) != cm.c.TelegramOpId) {
+		if int64(update.Message.From.ID) != cm.c.TelegramOpId {
 			log.Println(fmt.Sprintf("[%d %s] sends me unauth message: %s",
 				update.Message.From.ID, update.Message.From.UserName, update.Message.Text))
 			continue
 		}
 
 		log.Println(fmt.Sprintf("operator sends me %s", update.Message.Text))
+
+		if strings.ToLower(strings.Trim(update.Message.Text, " ")) == "test" {
+			cm.chatChannel <- "I'm alive!"
+		}
 	}
 }
 
