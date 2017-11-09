@@ -49,9 +49,11 @@ func (cm *ChatManager) startReadLoop() {
 			continue
 		}
 
-		log.Println(fmt.Sprintf("operator sends me %s", update.Message.Text))
+		var processed = strings.ToLower(strings.Trim(update.Message.Text, " "));
 
-		if strings.ToLower(strings.Trim(update.Message.Text, " ")) == "test" {
+		log.Println(fmt.Sprintf("operator sends me %s, processed [%s]", update.Message.Text, processed))
+
+		if processed == "test" {
 			cm.chatChannel <- "I'm alive!"
 		}
 	}
