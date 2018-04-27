@@ -7,6 +7,9 @@ import (
 	"fmt"
 	"time"
 	"strings"
+	"golang.org/x/net/proxy"
+	"net/http"
+	"os"
 )
 
 type ChatManager struct {
@@ -81,7 +84,24 @@ func (cm *ChatManager) startWriteLoop() {
 
 func (cm *ChatManager) Start() {
 
-	bot, err := tgbotapi.NewBotAPI(cm.c.TelegramKey)
+	auth := proxy.Auth{
+		User: cm.c.ProxyUser,
+		Password: cm.c.ProxyPass,
+	}
+
+	dialer, err := proxy.SOCKS5("tcp", cm.c.ProxyUrl, &auth, proxy.Direct)
+	if err != nil {
+		log.Println("can't connect to the proxy:", err)
+		os.Exit(1)
+	}
+
+	httpTransport := &http.Transport{}
+	httpClient := &http.Client{Transport: httpTransport}
+	httpTransport.Dial = dialer.Dial
+
+	log.Println("proxy created succesfully")
+
+	bot, err := tgbotapi.NewBotAPIWithClient(cm.c.TelegramKey, httpClient)
 
 	if err != nil {
 		log.Println("telegram bot creating failed", err)

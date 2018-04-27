@@ -87,12 +87,7 @@ func (c *Checker) StartLoop() {
 		ip := checkConnection(c.config.GetIPURL1)
 
 		if ip == "" {
-			checkService = "2"
-			ip = checkConnection(c.config.GetIPURL2)
-
-			if ip == "" {
-				checkService = ""
-			}
+			checkService = ""
 		}
 
 		isConnectionOk := ip != ""

@@ -14,6 +14,9 @@ type Config struct {
 	LastAlive		*time.Time	`json:"lastAlive"`
 	GetIPURL1		string		`json:"getIPURL1"`
 	GetIPURL2		string		`json:"getIPURL2"`
+	ProxyUrl		string		`json:"proxyUrl"`
+	ProxyUser		string		`json:"proxyUser"`
+	ProxyPass		string		`json:"proxyPass"`
 }
 
 func (c *Config) getFileName() string {
