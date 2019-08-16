@@ -1,15 +1,13 @@
 package chats
 
 import (
-	"github.com/nightdeveloper/smartcenter/settings"
-	"github.com/go-telegram-bot-api/telegram-bot-api"
-	"log"
 	"fmt"
-	"time"
-	"strings"
-	"golang.org/x/net/proxy"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/nightdeveloper/smartcenter/settings"
+	"log"
 	"net/http"
-	"os"
+	"strings"
+	"time"
 )
 
 type ChatManager struct {
@@ -84,6 +82,7 @@ func (cm *ChatManager) startWriteLoop() {
 
 func (cm *ChatManager) Start() {
 
+	/*
 	auth := proxy.Auth{
 		User: cm.c.ProxyUser,
 		Password: cm.c.ProxyPass,
@@ -94,12 +93,15 @@ func (cm *ChatManager) Start() {
 		log.Println("can't connect to the proxy:", err)
 		os.Exit(1)
 	}
+	*/
+
+	log.Println("creating chat manager")
 
 	httpTransport := &http.Transport{}
 	httpClient := &http.Client{Transport: httpTransport}
-	httpTransport.Dial = dialer.Dial
+	//httpTransport.Dial = dialer.Dial
 
-	log.Println("proxy created succesfully")
+	log.Println("http transport created succesfully")
 
 	bot, err := tgbotapi.NewBotAPIWithClient(cm.c.TelegramKey, httpClient)
 
@@ -107,6 +109,8 @@ func (cm *ChatManager) Start() {
 		log.Println("telegram bot creating failed", err)
 		return
 	}
+
+	bot.Debug = true
 
 	log.Println("telegram bot created")
 
