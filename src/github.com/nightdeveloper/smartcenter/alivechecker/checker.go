@@ -63,9 +63,9 @@ func (c *Checker) StartLoop() {
 	c.config.Load()
 
 	if c.config.LastAlive != nil {
-		duration := time.Since(*c.config.LastAlive);
+		duration := time.Since(*c.config.LastAlive).Round(time.Second)
 
-		msg := fmt.Sprintf("Last alive at %s, unavailable %s",   
+		msg := fmt.Sprintf("Just restarted, last alive at %s, unavailable %s",
 			c.config.LastAlive.Format("02.01.2006 15:04:05"),   
 			duration)
 
