@@ -128,7 +128,7 @@ func (c *Checker) StartLoop() {
 				if lastConnectionTime.IsZero() {
 					duration = "from startup"
 				} else {
-					duration = time.Since(lastConnectionTime).String();
+					duration = time.Since(lastConnectionTime).Round(time.Second).String()
 				}
 
 
