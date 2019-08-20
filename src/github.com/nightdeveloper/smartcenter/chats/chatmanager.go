@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/nightdeveloper/smartcenter/settings"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
-	"time"
+	"net/url"
 )
 
 type ChatManager struct {
@@ -17,65 +17,43 @@ type ChatManager struct {
 }
 
 func (cm *ChatManager) Init(c *settings.Config) {
-	cm.c = c;
+	cm.c = c
 
-	cm.chatChannel = make(chan string);
+	cm.chatChannel = make(chan string)
 }
 
 func (cm *ChatManager) GetChatChannel() chan string {
-	return cm.chatChannel;
-}
-
-func (cm *ChatManager) startReadLoop() {
-
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-
-	updates, err := cm.bot.GetUpdatesChan(u)
-
-	if err != nil {
-		log.Println("Can not get updates channel", err)
-		return;
-	}
-
-	for update := range updates {
-
-		if update.Message == nil {
-			continue
-		}
-
-		if int64(update.Message.From.ID) != cm.c.TelegramOpId {
-			log.Println(fmt.Sprintf("[%d %s] sends me unauth message: %s",
-				update.Message.From.ID, update.Message.From.UserName, update.Message.Text))
-			continue
-		}
-
-		var processed = strings.ToLower(strings.Trim(update.Message.Text, " "));
-
-		log.Println(fmt.Sprintf("operator sends me %s, processed [%s]", update.Message.Text, processed))
-
-		if processed == "test" {
-			cm.chatChannel <- "I'm alive!"
-		}
-	}
+	return cm.chatChannel
 }
 
 func (cm *ChatManager) startWriteLoop() {
 
 	for msg := range cm.chatChannel {
 
-		newMsg := tgbotapi.NewMessage(cm.c.TelegramOpId, msg)
-		newMsg.ParseMode = "markdown"
+		log.Println("sending " + msg)
 
-		for {
-			_, err := cm.bot.Send(newMsg)
+		response, err := http.PostForm("http://api.pushover.net/1/messages.json", url.Values{
+			"token":   {cm.c.PushToken},
+			"user":    {cm.c.PushUserId},
+			"device":  {cm.c.PushDeviceName},
+			"title":   {"SmartCenter"},
+			"message": {msg},
+		})
+
+		if err != nil {
+			log.Println("error - " + err.Error())
+
+		} else {
+
+			defer response.Body.Close()
+
+			body, err := ioutil.ReadAll(response.Body)
 
 			if err != nil {
-				log.Println("error while sending message: " + err.Error())
-				time.Sleep(time.Duration(1) * time.Minute);
-			} else {
-				break;
+				log.Println("response read error - " + err.Error())
 			}
+
+			log.Println(fmt.Sprintf("%s\n", string(body)))
 		}
 	}
 }
@@ -97,28 +75,13 @@ func (cm *ChatManager) Start() {
 
 	log.Println("creating chat manager")
 
-	httpTransport := &http.Transport{}
-	httpClient := &http.Client{Transport: httpTransport}
-	//httpTransport.Dial = dialer.Dial
+	// httpTransport := &http.Transport{}
+	// httpClient := &http.Client{Transport: httpTransport}
+	// httpTransport.Dial = dialer.Dial
+	// log.Println("http transport created succesfully")
 
-	log.Println("http transport created succesfully")
 
-	bot, err := tgbotapi.NewBotAPIWithClient(cm.c.TelegramKey, httpClient)
-
-	if err != nil {
-		log.Println("telegram bot creating failed", err)
-		return
-	}
-
-	bot.Debug = true
-
-	log.Println("telegram bot created")
-
-	cm.bot = bot
-
-	go cm.startReadLoop()
 	go cm.startWriteLoop()
 
 	log.Println("chat manager started")
-
 }

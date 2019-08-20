@@ -11,6 +11,9 @@ import (
 type Config struct {
 	TelegramKey		string		`json:"telegramKey"`
 	TelegramOpId	int64		`json:"telegramOpId"`
+	PushUserId		string		`json:"pushUserId"`
+	PushToken		string		`json:"pushToken"`
+	PushDeviceName	string		`json:"pushDeviceName"`
 	LastAlive		*time.Time	`json:"lastAlive"`
 	GetIPURL1		string		`json:"getIPURL1"`
 	GetIPURL2		string		`json:"getIPURL2"`

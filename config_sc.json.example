@@ -1,6 +1,9 @@
 {
 	"telegramKey" : "123123123123123123123123123123123123123123123",
 	"telegramOpId" : "123456789",
+	"pushUserId": "pushover_user_id",
+	"pushToken": "pushover_token",
+	"pushDeviceName": "android",
 	"getIPURL1": "http://host/getip.php",
 	"proxyUrl": "127.0.0.1:1080",
 	"proxyUser": "admin",

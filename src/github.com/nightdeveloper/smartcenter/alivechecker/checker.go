@@ -54,18 +54,14 @@ func checkConnection(url string) string {
 }
 
 func (c *Checker) StartLoop() {
-	log.Println("alive checker loop started")
-
-	msg := "Alive check started"
-	log.Println(msg)
-	c.chatChannel <- msg
+	log.Println("Alive check started")
 
 	c.config.Load()
 
 	if c.config.LastAlive != nil {
 		duration := time.Since(*c.config.LastAlive).Round(time.Second)
 
-		msg := fmt.Sprintf("Just restarted, last alive at %s, unavailable %s",
+		msg := fmt.Sprintf("Restarted, last alive at %s, unavailable %s",
 			c.config.LastAlive.Format("02.01.2006 15:04:05"),   
 			duration)
 
@@ -104,10 +100,19 @@ func (c *Checker) StartLoop() {
 
 		if lastIp != ip && ip != "" {
 
-			msg := fmt.Sprintf("IP changed %s -> %s (checkservice %s)",
-				lastIp,
-				ip,
-				checkService)
+			msg := ""
+
+			if lastIp == "" {
+				msg = fmt.Sprintf("Started with IP %s (checkservice %s)",
+					ip,
+					checkService)
+
+			} else {
+				msg = fmt.Sprintf("IP changed %s -> %s (checkservice %s)",
+					lastIp,
+					ip,
+					checkService)
+			}
 
 			log.Println(msg)
 
